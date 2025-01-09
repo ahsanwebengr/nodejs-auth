@@ -36,9 +36,7 @@ const userSchema = new Schema(
     },
     access_token: [],
     otp_code: {
-      type: Number,
-      max: 6,
-      min: 6
+      type: Number
     },
     otp_expiry: {
       type: Date

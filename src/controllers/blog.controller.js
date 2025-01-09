@@ -5,8 +5,12 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 const createBlog = asyncHandler(async (req, res) => {
   const { title, content, tags, category, thumbnail } = req.body
 
-  if ([title, content, category].some((field) => field?.trim() === '')) {
-    return next(new ApiError(400, 'Title, content and category are required'))
+  if (
+    [title, content, category, thumbnail].some((field) => field?.trim() === '')
+  ) {
+    return next(
+      new ApiError(400, 'Title, content, thumbnail and category are required')
+    )
   }
 
   const existingBlog = await Blog.findOne({ title })
@@ -15,12 +19,14 @@ const createBlog = asyncHandler(async (req, res) => {
     return next(new ApiError(409, 'Blog with same title already exists'))
   }
 
+  const thumbnailPath = req.file ? req.file.filename : null
+
   const newBlog = new Blog({
     title,
     content,
     tags,
     category,
-    thumbnail,
+    thumbnail: thumbnailPath,
     author: req.user._id
   })
 
@@ -28,7 +34,8 @@ const createBlog = asyncHandler(async (req, res) => {
 
   return res.status(201).json({
     message: 'Blog created successfully',
-    success: true
+    success: true,
+    blog: newBlog
   })
 })
 

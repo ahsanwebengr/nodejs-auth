@@ -26,7 +26,7 @@ const userRegister = asyncHandler(async (req, res, next) => {
     next(new ApiError(409, 'User with email or username already exists'))
   }
 
-  const profilePicPath = req.file ? req.file.path : null
+  const profilePicPath = req.file ? req.file.filename : null
 
   const user = await User.create({
     username: username.toLowerCase(),
@@ -114,7 +114,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, 'User not found'))
   }
 
-  const OTP = Math.floor(Math.random() * 1000000 + 1)
+  const OTP = Math.floor(100000 + Math.random() * 900000)
 
   user.otp_code = OTP
   await user.save()
