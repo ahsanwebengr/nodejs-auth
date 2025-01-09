@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose';
 
 const blogSchema = new Schema(
   {
@@ -39,8 +39,8 @@ const blogSchema = new Schema(
     }
   },
   { timestamps: true }
-)
+);
 
-const Blog = model('Blog', blogSchema)
+const Blog = model('Blog', blogSchema);
 
-export default Blog
+export default Blog;

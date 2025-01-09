@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import { Schema, model } from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const userSchema = new Schema(
   {
@@ -47,25 +47,25 @@ const userSchema = new Schema(
     }
   },
   { timestamps: true }
-)
+);
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next()
+  if (!this.isModified('password')) return next();
 
-  this.password = await bcrypt.hash(this.password, 10)
-  next()
-})
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 userSchema.pre('save', function (next) {
   if (this.isModified('otp_code')) {
-    this.otp_expiry = Date.now() + 60000
+    this.otp_expiry = Date.now() + 60000;
   }
-  next()
-})
+  next();
+});
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password)
-}
+  return await bcrypt.compare(password, this.password);
+};
 
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -76,13 +76,13 @@ userSchema.methods.generateAccessToken = function () {
       full_name: this.full_name,
       role: this.role
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET
     // {
     //   expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     // }
-  )
-}
+  );
+};
 
-const User = model('User', userSchema)
+const User = model('User', userSchema);
 
-export default User
+export default User;
