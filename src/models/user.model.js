@@ -77,9 +77,9 @@ userSchema.methods.generateAccessToken = function () {
       role: this.role
     },
     process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-    }
+    // {
+    //   expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+    // }
   )
 }
 
