@@ -5,14 +5,16 @@ import pluginJs from '@eslint/js';
 export default [
   {
     languageOptions: {
-      globals: globals.browser // Define browser-specific globals
+      globals: {
+        ...globals.browser,
+        process: true
+      }
     },
     rules: {
-      // Add custom rules here
-      'no-console': 'warn', // Example: Warn when console.log is used
-      eqeqeq: 'error', // Enforce strict equality
-      semi: ['error', 'always'], // Require semicolons
-      quotes: ['error', 'single'], // Enforce single quotes
+      'no-console': 'warn',
+      eqeqeq: 'error',
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
       'node/no-process-env': 'off'
     }
   },

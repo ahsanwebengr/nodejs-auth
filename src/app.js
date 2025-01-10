@@ -10,7 +10,6 @@ const app = express();
 
 app.use(
   cors({
-    // eslint-disable-next-line no-undef
     origin: process.env.CORS_ORIGIN,
     credentials: true
   })

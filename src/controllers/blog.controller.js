@@ -34,8 +34,7 @@ const createBlog = asyncHandler(async (req, res, next) => {
 
   return res.status(201).json({
     message: 'Blog created successfully',
-    success: true,
-    blog: newBlog
+    success: true
   });
 });
 
@@ -86,6 +85,7 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, 'Blog ID is required'));
   }
 
+  let a = 10;
   const blog = await Blog.findByIdAndDelete(id);
 
   if (!blog) {

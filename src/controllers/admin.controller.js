@@ -2,7 +2,7 @@ import Blog from '../models/blog.model.js';
 import ApiError from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
-const adminDeleteBlog = asyncHandler(async (req, res) => {
+const adminDeleteBlog = asyncHandler(async (req, res, next) => {
   const { userId, blogId } = req.params;
 
   if (!userId || !blogId) {
