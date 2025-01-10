@@ -11,13 +11,7 @@ const createBlog = asyncHandler(async (req, res, next) => {
 
   if (error) {
     return next(
-      new ApiError(
-        400,
-        error.details
-          .map((err) => err.message)
-          .join(',')
-          .replace(/['"]/g, '')
-      )
+      new ApiError(400, error.details[0].message.replace(/['"]/g, ''))
     );
   }
 
