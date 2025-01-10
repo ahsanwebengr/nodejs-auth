@@ -27,7 +27,8 @@ app.all('*', (req, res, next) => {
   next(new ApiError('404', 'Page not found'));
 });
 
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   const { status = 500, message = 'Something went wrong' } = err;
   res.status(status).json({ error: message, success: false });
 });

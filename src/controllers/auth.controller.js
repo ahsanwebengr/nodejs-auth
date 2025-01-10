@@ -1,5 +1,6 @@
 import User from '../models/user.model.js';
 import ApiError from '../utils/ApiError.js';
+import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 const userRegister = asyncHandler(async (req, res, next) => {
@@ -10,7 +11,7 @@ const userRegister = asyncHandler(async (req, res, next) => {
       (field) => field?.trim() === ''
     )
   ) {
-    next(
+    return next(
       new ApiError(
         400,
         'Full Name, Email, Username, Profile Pic and Password are required'
@@ -23,7 +24,9 @@ const userRegister = asyncHandler(async (req, res, next) => {
   });
 
   if (existedUser) {
-    next(new ApiError(409, 'User with email or username already exists'));
+    return next(
+      new ApiError(409, 'User with email or username already exists')
+    );
   }
 
   const profilePicPath = req.file ? req.file.filename : null;
@@ -40,7 +43,7 @@ const userRegister = asyncHandler(async (req, res, next) => {
 
   return res
     .status(201)
-    .json({ message: 'User created successfully', success: true });
+    .json(new ApiResponse(201, 'User created successfully'));
 });
 
 const userLogin = asyncHandler(async (req, res, next) => {
@@ -73,20 +76,21 @@ const userLogin = asyncHandler(async (req, res, next) => {
 
   await user.save();
 
-  return res.status(200).cookie('access_token', token, options).json({
-    message: 'User Logged in successfully',
-    success: true,
-    accessToken: token
-  });
+  return res
+    .status(200)
+    .cookie('access_token', token, options)
+    .json(
+      new ApiResponse(200, 'User Logged in successfully', {
+        accessToken: token
+      })
+    );
 });
 
 const userLogout = asyncHandler(async (req, res, next) => {
   const { access_token } = req.cookies;
 
   if (!access_token) {
-    return res
-      .status(400)
-      .json({ message: 'You are already logged out', success: false });
+    return next(new ApiError(400, 'You are already logged out'));
   }
 
   const user = await User.findOneAndUpdate(
@@ -102,7 +106,7 @@ const userLogout = asyncHandler(async (req, res, next) => {
   return res
     .status(200)
     .clearCookie('access_token')
-    .json({ message: 'User logged out successfully', success: true });
+    .json(new ApiResponse(200, 'User logged out successfully'));
 });
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
@@ -121,7 +125,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json({ message: 'OTP send successfully', OTP, success: true });
+    .json(new ApiResponse(200, 'OTP send successfully', { OTP }));
 });
 
 const verifyOtp = asyncHandler(async (req, res, next) => {
@@ -146,7 +150,7 @@ const verifyOtp = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json({ message: 'OTP is verified successfully', success: true });
+    .json(new ApiResponse(200, 'OTP is verified successfully'));
 });
 
 const resetPassword = asyncHandler(async (req, res, next) => {
@@ -174,7 +178,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json({ message: 'Password reset successfully', success: true });
+    .json(new ApiResponse(200, 'Password reset successfully'));
 });
 
 export {

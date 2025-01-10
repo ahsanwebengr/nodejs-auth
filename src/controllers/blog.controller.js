@@ -1,5 +1,6 @@
 import Blog from '../models/blog.model.js';
 import ApiError from '../utils/ApiError.js';
+import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 const createBlog = asyncHandler(async (req, res, next) => {
@@ -32,10 +33,9 @@ const createBlog = asyncHandler(async (req, res, next) => {
 
   await newBlog.save();
 
-  return res.status(201).json({
-    message: 'Blog created successfully',
-    success: true
-  });
+  return res
+    .status(201)
+    .json(new ApiResponse(201, 'Blog created successfully'));
 });
 
 const getAllBlogs = asyncHandler(async (req, res) => {
@@ -75,7 +75,7 @@ const getBlog = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, 'Blog not found'));
   }
 
-  return res.status(200).json({ blog, success: true });
+  return res.status(200).json(new ApiResponse(200, 'Blog Retrieved', { blog }));
 });
 
 const deleteBlog = asyncHandler(async (req, res, next) => {
@@ -85,7 +85,6 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, 'Blog ID is required'));
   }
 
-  let a = 10;
   const blog = await Blog.findByIdAndDelete(id);
 
   if (!blog) {
@@ -94,7 +93,7 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json({ message: 'Blog deleted successfully', success: true });
+    .json(new ApiResponse(200, 'Blog deleted successfully'));
 });
 
 const updateBlog = asyncHandler(async (req, res, next) => {
@@ -126,10 +125,9 @@ const updateBlog = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, 'Blog not found'));
   }
 
-  return res.status(200).json({
-    message: 'Blog updated successfully',
-    success: true
-  });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, 'Blog updated successfully'));
 });
 
 export { createBlog, getAllBlogs, getBlog, deleteBlog, updateBlog };
