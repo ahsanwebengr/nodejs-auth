@@ -5,12 +5,13 @@ import authRoutes from './routes/auth.routes.js';
 import blogRoutes from './routes/blog.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import ApiError from './utils/ApiError.js';
+import { CORS_ORIGIN } from './configs/env.config.js';
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: CORS_ORIGIN,
     credentials: true
   })
 );

@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import { sendOtpPasswordEmail } from '../services/email.service.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -121,11 +122,12 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   const OTP = Math.floor(100000 + Math.random() * 900000);
 
   user.otp_code = OTP;
+  user.otp_expiry = Date.now() + 1 * 60 * 1000;
   await user.save();
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, 'OTP send successfully', { OTP }));
+  await sendOtpPasswordEmail(email, OTP);
+
+  return res.status(200).json(new ApiResponse(200, 'OTP send successfully'));
 });
 
 const verifyOtp = asyncHandler(async (req, res, next) => {
@@ -134,18 +136,22 @@ const verifyOtp = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, 'Email and OTP are required'));
   }
 
-  const user = await User.findOne({ email, otp_code: otp });
+  const user = await User.findOne({ email });
 
-  if (!user) {
+  if (!user || user.otp_code !== otp) {
     return next(new ApiError(404, 'Invalid OTP Code, Please try again!'));
   }
 
   if (Date.now() > user.otp_expiry) {
+    user.otp_code = null;
+    user.otp_expiry = null;
+    await user.save();
     return next(new ApiError(400, 'OTP has expired, please request a new one'));
   }
 
   user.is_otp_verified = true;
   user.otp_code = null;
+  user.otp_expiry = null;
   await user.save();
 
   return res
