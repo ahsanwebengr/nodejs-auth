@@ -2,16 +2,29 @@ import Blog from '../models/blog.model.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { blogValidation } from '../validations/blog.validator.js';
 
 const createBlog = asyncHandler(async (req, res, next) => {
-  const { title, content, tags, category, thumbnail } = req.body;
+  const { error, value } = blogValidation.validate(req.body, {
+    abortEarly: false
+  });
 
-  if (
-    [title, content, category, thumbnail].some((field) => field?.trim() === '')
-  ) {
+  if (error) {
     return next(
-      new ApiError(400, 'Title, content, thumbnail and category are required')
+      new ApiError(
+        400,
+        error.details
+          .map((err) => err.message)
+          .join(',')
+          .replace(/['"]/g, '')
+      )
     );
+  }
+
+  const { title, content, tags, category } = value;
+
+  if (!req.file) {
+    return next(new ApiError(400, 'Thumbnail image is required'));
   }
 
   const existingBlog = await Blog.findOne({ title });
@@ -103,11 +116,23 @@ const updateBlog = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, 'Blog ID is required'));
   }
 
-  const { title, content, tags, category, thumbnail } = req.body;
+  const { error, value } = blogValidation.validate(req.body, {
+    abortEarly: false
+  });
 
-  if (!title?.trim() || !content?.trim() || !category?.trim()) {
-    return next(new ApiError(400, 'Title, content and category are required'));
+  if (error) {
+    return next(
+      new ApiError(
+        400,
+        error.details
+          .map((err) => err.message)
+          .join(',')
+          .replace(/['"]/g, '')
+      )
+    );
   }
+
+  const { title, content, tags, category, thumbnail } = value;
 
   const updateFields = {
     title,

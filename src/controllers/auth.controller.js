@@ -3,21 +3,21 @@ import { sendOtpPasswordEmail } from '../services/email.service.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { registerValidation } from '../validations/auth.validator.js';
 
 const userRegister = asyncHandler(async (req, res, next) => {
-  const { full_name, email, password, username, profile_pic } = req.body;
+  const { error, value } = registerValidation.validate(req.body);
 
-  if (
-    [full_name, email, username, password, profile_pic].some(
-      (field) => field?.trim() === ''
-    )
-  ) {
+  if (error) {
     return next(
-      new ApiError(
-        400,
-        'Full Name, Email, Username, Profile Pic and Password are required'
-      )
+      new ApiError(400, error.details[0].message.replace(/['"]/g, ''))
     );
+  }
+
+  const { full_name, username, email, password } = value;
+
+  if (!req.file) {
+    return next(new ApiError(400, 'Profile Pic is required'));
   }
 
   const existedUser = await User.findOne({
