@@ -36,7 +36,13 @@ const blogSchema = new Schema(
     },
     thumbnail: {
       type: String
-    }
+    },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+      }
+    ]
   },
   { timestamps: true }
 );
