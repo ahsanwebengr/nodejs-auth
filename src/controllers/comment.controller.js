@@ -2,7 +2,6 @@ import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { commentValidation } from '../validations/comment.validator.js';
-import Comment from '../models/comment.model.js';
 import Blog from '../models/blog.model.js';
 
 const addComment = asyncHandler(async (req, res, next) => {
@@ -21,13 +20,20 @@ const addComment = asyncHandler(async (req, res, next) => {
   }
 
   const { text } = value;
-  const comment = await Comment.create({ user: userId, text });
 
-  await Blog.findByIdAndUpdate(
-    blogId,
-    { $push: { comments: comment._id } },
-    { new: true }
-  );
+  const blog = await Blog.findById(blogId);
+
+  if (!blog) {
+    return next(new ApiError(404, 'Blog not found'));
+  }
+
+  await blog.comments.push({
+    user: userId,
+    text,
+    created_at: new Date()
+  });
+
+  await blog.save();
 
   return res
     .status(201)

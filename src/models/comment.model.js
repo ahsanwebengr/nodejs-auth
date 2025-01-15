@@ -1,21 +1,19 @@
-import { Schema, model } from 'mongoose';
+import { Schema } from 'mongoose';
 
-const commentSchema = new Schema(
-  {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    text: {
-      type: String,
-      required: [true, 'Comment text is required'],
-      maxlength: [500, 'Comment cannot exceed 500 characters']
-    }
+export const commentSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  { timestamps: true }
-);
 
-const Comment = model('Comment', commentSchema);
-
-export default Comment;
+  text: {
+    type: String,
+    required: [true, 'Comment text is required'],
+    maxlength: [500, 'Comment cannot exceed 500 characters']
+  },
+  created_at: {
+    type: Date,
+    default: Date.now()
+  }
+});
