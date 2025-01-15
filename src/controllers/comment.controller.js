@@ -1,8 +1,8 @@
+import Blog from '../models/blog.model.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { commentValidation } from '../validations/comment.validator.js';
-import Blog from '../models/blog.model.js';
 
 const addComment = asyncHandler(async (req, res, next) => {
   const { error, value } = commentValidation.validate(req.body);
@@ -118,7 +118,7 @@ const editComment = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, 'Comment updated successfully', { comment }));
+    .json(new ApiResponse(200, 'Comment updated successfully'));
 });
 
 export { addComment, deleteComment, editComment };
