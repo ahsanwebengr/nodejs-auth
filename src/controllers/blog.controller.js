@@ -52,8 +52,15 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
   const blogs = await Blog.find(filter)
     .populate('author', 'full_name email username')
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'user',
+        select: 'full_name email username'
+      }
+    })
     .skip(skip)
-    .limit(parseInt(limit));
+    .limit(Number.parseInt(limit));
 
   const totals = await Blog.countDocuments(filter);
 
@@ -61,7 +68,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
     success: true,
     blogs,
     totals,
-    current_page: parseInt(page),
+    current_page: Number.parseInt(page),
     pages: Math.ceil(totals / limit)
   });
 });
