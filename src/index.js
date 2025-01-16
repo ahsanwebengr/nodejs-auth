@@ -7,6 +7,8 @@ dotenv.config({
   path: './.env'
 });
 
+app.get('/', (req, res) => res.send('Express on Vercel'));
+
 connectDB()
   .then(() => {
     app.listen(PORT || 8000, () => {
