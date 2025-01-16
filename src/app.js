@@ -22,6 +22,10 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
+app.get('/', (req, res) => {
+  res.send('Hello, Welcome to Node JS!');
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/admin', adminRoutes);
