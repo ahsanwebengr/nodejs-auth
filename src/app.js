@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
   res.send('Hello, Welcome to Node JS!');
 });
 
-app.use(router);
+app.use('/api', router);
 app.all('*', (req, res, next) => {
   next(new ApiError(404, 'Page not found'));
 });
