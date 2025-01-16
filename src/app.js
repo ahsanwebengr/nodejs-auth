@@ -1,12 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import authRoutes from './routes/auth.routes.js';
-import blogRoutes from './routes/blog.routes.js';
-import adminRoutes from './routes/admin.routes.js';
-import commentRoutes from './routes/comment.routes.js';
 import ApiError from './utils/ApiError.js';
 import { CORS_ORIGIN } from './configs/env.config.js';
+import router from './routes/index.js';
 
 const app = express();
 
@@ -26,10 +23,7 @@ app.get('/', (req, res) => {
   res.send('Hello, Welcome to Node JS!');
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/blogs', blogRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/comments', commentRoutes);
+app.use(router);
 app.all('*', (req, res, next) => {
   next(new ApiError(404, 'Page not found'));
 });

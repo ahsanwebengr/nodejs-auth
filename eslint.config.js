@@ -17,6 +17,7 @@ export default [
       quotes: ['error', 'single'],
       'node/no-process-env': 'off'
     }
+    
   },
   pluginJs.configs.recommended
 ];
