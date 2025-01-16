@@ -9,7 +9,7 @@
     "lint": "npx eslint ."
   },
   "keywords": [],
-  "author": "",
+  "author": "M Ahsan",
   "license": "ISC",
   "description": "",
   "dependencies": {
